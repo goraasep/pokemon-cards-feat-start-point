@@ -3,6 +3,7 @@ import "./App.css";
 // import usePokemonDetails from './hooks/usePokemonDetail'
 import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
+import Pokemon from "./pages/Pokemon";
 function App() {
   // Use the custom hook to fetch pokemon list
   // Example below
@@ -13,7 +14,7 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<Home />}></Route>
-        {/* <Route path="/contact-us" element={<Contact />}></Route> */}
+        <Route path="/pokemon/:name" element={<Pokemon />}></Route>
       </Routes>
     </>
   );

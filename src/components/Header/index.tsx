@@ -3,7 +3,8 @@ import pokemon from "../../assets/pokemon.png";
 import searchImg from "../../assets/search.svg";
 import { useDebouncedCallback } from "use-debounce";
 interface Props {
-  handleSearchValue: (value: string) => void;
+  handleSearchValue?: (value: string) => void;
+  isHome: boolean;
 }
 const Header: FC<Props> = ({ ...props }) => {
   const [isSearch, setIsSearch] = useState(false);
@@ -11,7 +12,9 @@ const Header: FC<Props> = ({ ...props }) => {
   const [debouncedValue, setDebouncedValue] = useState("");
   const debounced = useDebouncedCallback((value) => {
     setDebouncedValue(value);
-    props.handleSearchValue(value);
+    if (props.handleSearchValue !== undefined) {
+      props.handleSearchValue(value);
+    }
   }, 500);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
@@ -20,6 +23,13 @@ const Header: FC<Props> = ({ ...props }) => {
   useEffect(() => {
     console.log(debouncedValue);
   }, [debouncedValue]);
+  if (!props.isHome) {
+    return (
+      <div className="h-12 flex justify-start items-center px-5 border-b custom-border-color border-solid py-[6px] gap-8">
+        <img className="h-[35px]" src={pokemon} alt="" />
+      </div>
+    );
+  }
   return (
     <div className="h-12 flex justify-between items-center px-5 border-b custom-border-color border-solid py-[6px] gap-8">
       <img className="h-[35px]" src={pokemon} alt="" />

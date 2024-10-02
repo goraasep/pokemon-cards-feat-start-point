@@ -1,6 +1,6 @@
 import { FC } from "react";
 import usePokemonDetails from "../../hooks/usePokemonDetail";
-
+import { useNavigate } from "react-router-dom";
 interface CardProps {
   name: string;
   isSingleGrid: boolean;
@@ -8,11 +8,15 @@ interface CardProps {
 
 const Card: FC<CardProps> = ({ name, isSingleGrid }) => {
   const { pokemonDetails, loading, error } = usePokemonDetails(name);
+  const navigate = useNavigate();
 
   if (loading || !pokemonDetails) return <div>Loading...</div>;
   if (error) return <div>Something is wrong</div>;
+  const handleClick = () => {
+    navigate(`/pokemon/${pokemonDetails.name}`);
+  };
   return (
-    <div className="w-full rounded-2xl bg-custom-white">
+    <div onClick={handleClick} className="w-full rounded-2xl bg-custom-white">
       {isSingleGrid && (
         <div className="px-3 pt-3 flex justify-between">
           <div className="flex gap-2 ">

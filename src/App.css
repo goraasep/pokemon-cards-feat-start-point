@@ -20,12 +20,20 @@
   border-left: 1px solid #97a0cc;
 }
 
+.custom-border-grey {
+  border-color: #97a0cc;
+}
+
 .text-custom-gray {
   color: #97a0cc;
 }
 
 .bg-custom-white {
   background: #f0f3ff;
+}
+
+.bg-custom-detail-card {
+  background: #05091b;
 }
 
 .text-custom-black {
@@ -38,4 +46,12 @@
 
 .custom-dropdown:hover {
   background: #7a87c7;
+}
+
+.bg-custom-black-2 {
+  background: #252a3e;
+}
+
+.bg-custom-green {
+  background: linear-gradient(90deg, #6cf0a1 0%, #2ae3b7 100%);
 }

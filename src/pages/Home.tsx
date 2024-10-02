@@ -35,7 +35,7 @@ const Home: FC = () => {
   };
   return (
     <div>
-      <Header handleSearchValue={handleSearchValue} />
+      <Header handleSearchValue={handleSearchValue} isHome={true} />
 
       <SortingAndGrid
         isSingleGrid={isSingleGrid}
@@ -49,7 +49,9 @@ const Home: FC = () => {
           <div>Loading...</div>
         ) : (
           <div
-            className={`px-5 py-4 grid grid-cols-${isSingleGrid ? 1 : 2} gap-5`}
+            className={`px-5 py-4 grid ${
+              isSingleGrid ? "grid-cols-1" : "grid-cols-2"
+            } gap-5`}
           >
             {pokemonList.map((each, index) => (
               <Card key={index} name={each.name} isSingleGrid={isSingleGrid} />
