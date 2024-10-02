@@ -5,7 +5,7 @@ import Card from "../components/Card";
 import Header from "../components/Header";
 import { PokemonContext } from "../context/PokemonContext";
 const Home: FC = () => {
-  const { isSingleGrid, pokemonList, loading, error } =
+  const { isSingleGrid, pokemonList, loading, error, page, handlePage, count } =
     useContext(PokemonContext);
 
   if (loading || !pokemonList) return <div>Loading...</div>;
@@ -14,8 +14,28 @@ const Home: FC = () => {
   return (
     <div>
       <Header isHome={true} />
-
       <SortingAndGrid isSingleGrid={isSingleGrid} />
+      <div className="px-5 pt-2 flex justify-between text-custom-gray">
+        <div>
+          Page {page} of {Math.floor(count / 20 + 1)}
+        </div>
+        <div className="flex gap-2 justify-center">
+          <div
+            onClick={() => {
+              handlePage(page - 1);
+            }}
+          >
+            {"<"}
+          </div>
+          <div
+            onClick={() => {
+              handlePage(page + 1);
+            }}
+          >
+            {">"}
+          </div>
+        </div>
+      </div>
       <div className="px-5 py-4">
         {loading ? (
           <div>Loading...</div>

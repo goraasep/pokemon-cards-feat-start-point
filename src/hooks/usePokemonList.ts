@@ -11,40 +11,64 @@ const usePokemonList = () => {
   const [error, setError] = useState<unknown>(null);
   const [sortByName, setSortByName] = useState<string>(""); //changed
   const [searchByName, setSearchByName] = useState<string>("");
+  const [count, setCount] = useState<number>(0);
+  const [page, setPage] = useState<number>(1);
   const MAX_FETCH_DATA = 10000;
-  const LOCAL_STORAGE_KEY = "pokemonData";
+  const LOCAL_POKEMON_DATA = "pokemonData";
+
+  // setPage(parsedPage);
   useEffect(() => {
     const fetchPokemonList = async () => {
       try {
         let filteredResults: Pokemon[];
-        const storedPokemonData = localStorage.getItem(LOCAL_STORAGE_KEY);
+        let testCount = 0;
+        let pagination = (page - 1) * 20;
+        const storedPokemonData = localStorage.getItem(LOCAL_POKEMON_DATA);
+        const storedCount = localStorage.getItem("pokemonCount");
+        const storedPage = localStorage.getItem("pokemonPage");
+        const parsedPage: number = JSON.parse(storedPage as string);
+        // setPage(parsedPage);
         // const storedPokemonData = "";
         if (
           storedPokemonData &&
           storedPokemonData.length > 0 &&
-          !searchByName
+          !searchByName &&
+          page === parsedPage
         ) {
           const parsedData: Pokemon[] = JSON.parse(storedPokemonData);
+          const parsedCount: number = JSON.parse(storedCount as string);
+          setPage(parsedPage);
           filteredResults = parsedData;
+          testCount = parsedCount;
           console.log("stored");
         } else {
           console.log("not stored");
           const response = await fetch(
-            `https://pokeapi.co/api/v2/pokemon?limit=${
-              searchByName ? MAX_FETCH_DATA : 50
-            }`
+            `https://pokeapi.co/api/v2/pokemon?offset=${
+              searchByName ? 0 : pagination
+            }&limit=${searchByName ? MAX_FETCH_DATA : 20}`
           );
           if (!response.ok) {
             throw new Error("Failed to fetch Pokémon.");
           }
-          const data = (await response.json()) as { results: Pokemon[] };
+          const data = (await response.json()) as {
+            results: Pokemon[];
+            count: number;
+          };
+          console.log(data.count);
           filteredResults = data.results;
+          testCount = data.count;
+          console.log(testCount);
+
           if (!searchByName) {
             localStorage.setItem(
-              LOCAL_STORAGE_KEY,
+              LOCAL_POKEMON_DATA,
               JSON.stringify(filteredResults)
             );
+            localStorage.setItem("pokemonPage", page.toString());
+            localStorage.setItem("pokemonCount", testCount.toString());
           }
+          // setPage(1);
         }
 
         if (searchByName) {
@@ -65,6 +89,7 @@ const usePokemonList = () => {
           console.log("desc");
         }
         setPokemonList(filteredResults);
+        setCount(testCount);
         setLoading(false);
       } catch (error) {
         setError(error);
@@ -73,7 +98,7 @@ const usePokemonList = () => {
     };
 
     fetchPokemonList();
-  }, [sortByName, searchByName]);
+  }, [sortByName, searchByName, page]);
 
   return {
     pokemonList,
@@ -82,6 +107,9 @@ const usePokemonList = () => {
     sortByName,
     setSortByName,
     setSearchByName,
+    count,
+    page,
+    setPage,
   };
 };
 

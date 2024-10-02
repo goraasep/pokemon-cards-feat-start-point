@@ -12,9 +12,12 @@ interface PokemonProps {
   handleSearchQuery: (value: string) => void;
   handleSingleGrid: () => void;
   handleDoubleGrid: () => void;
+  page: number;
+  handlePage: (page: number) => void;
   pokemonList: Pokemon[];
   loading: boolean;
   error: any;
+  count: number;
 }
 const ctxDefaultValues: PokemonProps = {
   sortType: "",
@@ -24,17 +27,29 @@ const ctxDefaultValues: PokemonProps = {
   handleSearchQuery: () => {},
   handleSingleGrid: () => {},
   handleDoubleGrid: () => {},
+  page: 1,
+  handlePage: () => {},
   pokemonList: [],
   loading: false,
   error: null,
+  count: 0,
 };
 export const PokemonContext = createContext<PokemonProps>(ctxDefaultValues);
 const PokemonProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [sortType, setSortType] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isSingleGrid, setIsSingleGrid] = useState<boolean>(true);
-  const { pokemonList, loading, error, setSortByName, setSearchByName } =
-    usePokemonList();
+  // const [page, setPage] = useState<number>(1);
+  const {
+    pokemonList,
+    loading,
+    error,
+    setSortByName,
+    setSearchByName,
+    count,
+    page,
+    setPage,
+  } = usePokemonList();
   const handleSortType = (type: string) => {
     setSortType(type);
     setSortByName(type);
@@ -53,6 +68,12 @@ const PokemonProvider: FC<{ children: ReactNode }> = ({ children }) => {
     setIsSingleGrid(false);
   };
 
+  const handlePage = (page: number) => {
+    if (page >= 1 && page * 20 <= count + 20) {
+      setPage(page);
+    }
+  };
+
   return (
     <PokemonContext.Provider
       value={{
@@ -63,9 +84,12 @@ const PokemonProvider: FC<{ children: ReactNode }> = ({ children }) => {
         handleSearchQuery: handleSearchQuery,
         handleSingleGrid: handleSingleGrid,
         handleDoubleGrid: handleDoubleGrid,
+        page: page,
+        handlePage: handlePage,
         pokemonList: pokemonList,
         loading: loading,
         error: error,
+        count: count,
       }}
     >
       {children}
