@@ -1,9 +1,9 @@
 import { FC, useState } from "react";
-import pokemon from "../assets/pokemon.png";
-import search from "../assets/search.svg";
+
 import SortingAndGrid from "../components/SortingAndGrid";
 import usePokemonList from "../hooks/usePokemonList";
 import Card from "../components/Card";
+import Header from "../components/Header";
 interface Pokemon {
   name: string;
   url: string;
@@ -11,7 +11,9 @@ interface Pokemon {
 const Home: FC = () => {
   const [isSingleGrid, setIsSingleGrid] = useState(true);
   const [dropdownType, setDropdownType] = useState<string>("");
-  const { pokemonList, loading, error, setSortByName } = usePokemonList();
+  const [searchValue, setSearchValue] = useState<string>("");
+  const { pokemonList, loading, error, setSortByName, setSearchByName } =
+    usePokemonList();
   if (loading || !pokemonList) return <div>Loading...</div>;
   if (error) return <div>Something is wrong</div>;
   //   console.log(pokemonList);
@@ -26,12 +28,14 @@ const Home: FC = () => {
     setSortByName(type);
     setDropdownType(type);
   };
+
+  const handleSearchValue = (value: string) => {
+    setSearchValue(value);
+    setSearchByName(value);
+  };
   return (
     <div>
-      <div className="h-12 flex justify-between items-center px-5 border-b custom-border-color border-solid py-[6px]">
-        <img className="h-[35px]" src={pokemon} alt="" />
-        <img className="w-5" src={search} alt="" />
-      </div>
+      <Header handleSearchValue={handleSearchValue} />
 
       <SortingAndGrid
         isSingleGrid={isSingleGrid}
