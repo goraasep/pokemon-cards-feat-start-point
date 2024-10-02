@@ -39,7 +39,11 @@ const Card: FC<CardProps> = ({ name, isSingleGrid }) => {
         <img src={pokemonDetails.artworkFront} alt="pokemon" />
       </div>
 
-      <div className="text-lg text-custom-black font-bold leading-[14px] mb-[15px] text-center capitalize">
+      <div
+        className={`${
+          isSingleGrid ? "text-lg" : "text-sm"
+        } text-custom-black font-bold leading-[14px] mb-[15px] text-center capitalize`}
+      >
         {pokemonDetails.name}
       </div>
     </div>

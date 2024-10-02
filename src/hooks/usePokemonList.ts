@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-
+import { MAX_POKEMON_PER_PAGE } from "../constant/pokemonConstant";
 interface Pokemon {
   name: string;
   url: string;
@@ -15,38 +15,27 @@ const usePokemonList = () => {
   const [page, setPage] = useState<number>(1);
   const MAX_FETCH_DATA = 10000;
   const LOCAL_POKEMON_DATA = "pokemonData";
-
-  // setPage(parsedPage);
   useEffect(() => {
     const fetchPokemonList = async () => {
       try {
         let filteredResults: Pokemon[];
         let testCount = 0;
-        let pagination = (page - 1) * 20;
+        let pagination = (page - 1) * MAX_POKEMON_PER_PAGE;
         const storedPokemonData = localStorage.getItem(LOCAL_POKEMON_DATA);
         const storedCount = localStorage.getItem("pokemonCount");
         const storedPage = localStorage.getItem("pokemonPage");
         const parsedPage: number = JSON.parse(storedPage as string);
-        // setPage(parsedPage);
-        // const storedPokemonData = "";
-        if (
-          storedPokemonData &&
-          storedPokemonData.length > 0 &&
-          !searchByName &&
-          page === parsedPage
-        ) {
+
+        if (storedPokemonData && storedPokemonData.length > 0) {
           const parsedData: Pokemon[] = JSON.parse(storedPokemonData);
           const parsedCount: number = JSON.parse(storedCount as string);
-          setPage(parsedPage);
           filteredResults = parsedData;
           testCount = parsedCount;
           console.log("stored");
         } else {
           console.log("not stored");
           const response = await fetch(
-            `https://pokeapi.co/api/v2/pokemon?offset=${
-              searchByName ? 0 : pagination
-            }&limit=${searchByName ? MAX_FETCH_DATA : 20}`
+            `https://pokeapi.co/api/v2/pokemon?&limit=${MAX_FETCH_DATA}`
           );
           if (!response.ok) {
             throw new Error("Failed to fetch Pokémon.");
@@ -68,7 +57,6 @@ const usePokemonList = () => {
             localStorage.setItem("pokemonPage", page.toString());
             localStorage.setItem("pokemonCount", testCount.toString());
           }
-          // setPage(1);
         }
 
         if (searchByName) {
@@ -88,8 +76,15 @@ const usePokemonList = () => {
           );
           console.log("desc");
         }
+        //pagination
+        setCount(filteredResults.length);
+        let from = (page - 1) * MAX_POKEMON_PER_PAGE;
+        let to = page * MAX_POKEMON_PER_PAGE;
+        filteredResults = filteredResults.slice(from, to);
+
         setPokemonList(filteredResults);
-        setCount(testCount);
+        console.log(filteredResults.length);
+
         setLoading(false);
       } catch (error) {
         setError(error);

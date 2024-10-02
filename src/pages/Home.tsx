@@ -1,5 +1,5 @@
 import { FC, useContext } from "react";
-
+// import { MAX_POKEMON_PER_PAGE } from "../constant/pokemonConstant";
 import SortingAndGrid from "../components/SortingAndGrid";
 import Card from "../components/Card";
 import Header from "../components/Header";

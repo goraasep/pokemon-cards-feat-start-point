@@ -1,5 +1,6 @@
-import { createContext, FC, ReactNode, useState } from "react";
+import { createContext, FC, ReactNode, useEffect, useState } from "react";
 import usePokemonList from "../hooks/usePokemonList";
+import { MAX_POKEMON_PER_PAGE } from "../constant/pokemonConstant";
 interface Pokemon {
   name: string;
   url: string;
@@ -69,10 +70,17 @@ const PokemonProvider: FC<{ children: ReactNode }> = ({ children }) => {
   };
 
   const handlePage = (page: number) => {
-    if (page >= 1 && page * 20 <= count + 20) {
+    if (
+      page >= 1 &&
+      page * MAX_POKEMON_PER_PAGE <= count + MAX_POKEMON_PER_PAGE
+    ) {
       setPage(page);
     }
   };
+
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery]);
 
   return (
     <PokemonContext.Provider

@@ -1,0 +1,2 @@
+const MAX_POKEMON_PER_PAGE = 20;
+export { MAX_POKEMON_PER_PAGE };
