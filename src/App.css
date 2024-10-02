@@ -1,0 +1,41 @@
+#root {
+  max-width: 320px;
+  margin: 0 auto;
+  background: #252a3e;
+}
+
+.bg-lighter-blue {
+  background: #3d4466;
+}
+
+.bg-darker-blue {
+  background: #0c1231;
+}
+
+.custom-border-color {
+  border-color: #3d4466;
+}
+
+.custom-border {
+  border-left: 1px solid #97a0cc;
+}
+
+.text-custom-gray {
+  color: #97a0cc;
+}
+
+.bg-custom-white {
+  background: #f0f3ff;
+}
+
+.text-custom-black {
+  color: #212e4c;
+}
+
+.custom-dropdown {
+  background: #3d4466;
+}
+
+.custom-dropdown:hover {
+  background: #7a87c7;
+}
