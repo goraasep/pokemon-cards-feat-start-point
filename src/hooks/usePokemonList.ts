@@ -18,8 +18,12 @@ const usePokemonList = () => {
       try {
         let filteredResults: Pokemon[];
         const storedPokemonData = localStorage.getItem(LOCAL_STORAGE_KEY);
-
-        if (storedPokemonData && storedPokemonData.length > 0) {
+        // const storedPokemonData = "";
+        if (
+          storedPokemonData &&
+          storedPokemonData.length > 0 &&
+          !searchByName
+        ) {
           const parsedData: Pokemon[] = JSON.parse(storedPokemonData);
           filteredResults = parsedData;
           console.log("stored");
@@ -27,7 +31,7 @@ const usePokemonList = () => {
           console.log("not stored");
           const response = await fetch(
             `https://pokeapi.co/api/v2/pokemon?limit=${
-              searchByName ? MAX_FETCH_DATA : 20
+              searchByName ? MAX_FETCH_DATA : 50
             }`
           );
           if (!response.ok) {
@@ -35,10 +39,12 @@ const usePokemonList = () => {
           }
           const data = (await response.json()) as { results: Pokemon[] };
           filteredResults = data.results;
-          localStorage.setItem(
-            LOCAL_STORAGE_KEY,
-            JSON.stringify(filteredResults)
-          );
+          if (!searchByName) {
+            localStorage.setItem(
+              LOCAL_STORAGE_KEY,
+              JSON.stringify(filteredResults)
+            );
+          }
         }
 
         if (searchByName) {
