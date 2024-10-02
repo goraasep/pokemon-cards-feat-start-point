@@ -12,24 +12,35 @@ const usePokemonList = () => {
   const [sortByName, setSortByName] = useState<string>(""); //changed
   const [searchByName, setSearchByName] = useState<string>("");
   const MAX_FETCH_DATA = 10000;
+  const LOCAL_STORAGE_KEY = "pokemonData";
   useEffect(() => {
     const fetchPokemonList = async () => {
       try {
-        const response = await fetch(
-          `https://pokeapi.co/api/v2/pokemon?limit=${
-            searchByName ? MAX_FETCH_DATA : 20
-          }`
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch Pokémon.");
-        }
-        const data = await response.json();
-        // console.log(data);
-        // console.log("hehe");
-
         let filteredResults: Pokemon[];
-        filteredResults = data.results;
-        // console.log(filteredResults);
+        const storedPokemonData = localStorage.getItem(LOCAL_STORAGE_KEY);
+
+        if (storedPokemonData && storedPokemonData.length > 0) {
+          const parsedData: Pokemon[] = JSON.parse(storedPokemonData);
+          filteredResults = parsedData;
+          console.log("stored");
+        } else {
+          console.log("not stored");
+          const response = await fetch(
+            `https://pokeapi.co/api/v2/pokemon?limit=${
+              searchByName ? MAX_FETCH_DATA : 20
+            }`
+          );
+          if (!response.ok) {
+            throw new Error("Failed to fetch Pokémon.");
+          }
+          const data = (await response.json()) as { results: Pokemon[] };
+          filteredResults = data.results;
+          localStorage.setItem(
+            LOCAL_STORAGE_KEY,
+            JSON.stringify(filteredResults)
+          );
+        }
+
         if (searchByName) {
           const regex = new RegExp(searchByName, "i"); // Case-insensitive regex
           filteredResults = filteredResults.filter((pokemon) =>

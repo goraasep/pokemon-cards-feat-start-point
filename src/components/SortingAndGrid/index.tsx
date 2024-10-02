@@ -1,29 +1,19 @@
 import single_grid from "../../assets/single_grid.svg";
 import two_grid from "../../assets/two_grid.svg";
 import arrow_down from "../../assets/arrow_down.svg";
-import { useState } from "react";
-import usePokemonList from "../../hooks/usePokemonList";
+import { useContext, useState } from "react";
+import { PokemonContext } from "../../context/PokemonContext";
 interface SortingAndGridProps {
   isSingleGrid: boolean;
-  dropdownType: string;
-  handleSingleGrid: () => void;
-  handleDoubleGrid: () => void;
-  handleDropdownType: (type: string) => void;
 }
 
 const SortingAndGrid: React.FC<SortingAndGridProps> = ({ ...props }) => {
   const [dropdown, setDropdown] = useState<boolean>(false);
-  // const [dropdownType, setDropdownType] = useState<string>("");
-  // const { setSortByName } = usePokemonList();
-  // useEffect(() => {
-  //   console.log(props.isSingleGrid);
-  // }, [props.isSingleGrid]);
-  const handleDropdownTypeChild = (type: string) => {
-    // debounced(type);
-    // console.log(type);
-    // setSortByName(type);
-    // setDropdownType(type);
-    props.handleDropdownType(type);
+  const { handleSingleGrid, handleDoubleGrid, handleSortType, sortType } =
+    useContext(PokemonContext);
+
+  const handleDropdown = (type: string) => {
+    handleSortType(type);
     setDropdown(false);
   };
   return (
@@ -33,19 +23,19 @@ const SortingAndGrid: React.FC<SortingAndGridProps> = ({ ...props }) => {
           onClick={() => setDropdown(!dropdown)}
           className="flex items-center justify-between w-full px-2"
         >
-          <div>Sort by {props.dropdownType ? props.dropdownType : ""}</div>
+          <div>Sort by {sortType ? sortType : ""}</div>
           <img src={arrow_down} alt="" />
         </div>
         {dropdown && (
           <>
             <div
-              onClick={() => handleDropdownTypeChild("Ascending")}
+              onClick={() => handleDropdown("Ascending")}
               className="custom-dropdown cursor-pointer w-full text-center"
             >
               Ascending
             </div>
             <div
-              onClick={() => handleDropdownTypeChild("Descending")}
+              onClick={() => handleDropdown("Descending")}
               className="custom-dropdown cursor-pointer w-full text-center"
             >
               Descending
@@ -55,7 +45,7 @@ const SortingAndGrid: React.FC<SortingAndGridProps> = ({ ...props }) => {
       </div>
       <div className="flex items-center w-[70px] h-[32px] justify-between rounded-lg overflow-hidden">
         <div
-          onClick={props.handleSingleGrid}
+          onClick={handleSingleGrid}
           className={`flex items-center justify-center ${
             props.isSingleGrid ? "bg-lighter-blue" : "bg-darker-blue"
           } w-full h-full`}
@@ -63,7 +53,7 @@ const SortingAndGrid: React.FC<SortingAndGridProps> = ({ ...props }) => {
           <img src={single_grid} alt="" />
         </div>
         <div
-          onClick={props.handleDoubleGrid}
+          onClick={handleDoubleGrid}
           className={`flex items-center justify-center ${
             props.isSingleGrid ? "bg-darker-blue" : "bg-lighter-blue"
           } w-full h-full custom-border`}
